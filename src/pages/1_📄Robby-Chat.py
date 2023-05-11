@@ -8,8 +8,7 @@ from modules.layout import Layout
 from modules.utils import Utilities
 from modules.sidebar import Sidebar
 
-#To be able to update the changes made to modules in localhost,
-#you can press the "r" key on the localhost page to refresh and reflect the changes made to the module files.
+#To be able to update the changes made to modules in localhost (press r)
 def reload_module(module_name):
     import importlib
     import sys
@@ -47,6 +46,7 @@ else:
 
         # Configure the sidebar
         sidebar.show_options()
+        sidebar.about()
 
         # Initialize chat history
         history = ChatHistory()
@@ -97,4 +97,4 @@ else:
         except Exception as e:
             st.error(f"Error: {str(e)}")
 
-sidebar.about()
+
