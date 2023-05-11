@@ -12,10 +12,11 @@ class Sidebar:
     def about():
         about = st.sidebar.expander("🧠 About Robby ")
         sections = [
-            "#### Robby is an AI chatbot with a conversational memory, designed to allow users to discuss their data in a more intuitive way. 📄",
-            "#### It uses large language models to provide users with natural language interactions about user data content. 🌐",
-            "#### Powered by [Langchain](https://github.com/hwchase17/langchain), [OpenAI](https://platform.openai.com/docs/models/gpt-3-5) and [Streamlit](https://github.com/streamlit/streamlit) ⚡",
-            "#### Source code: [yvann-hub/Robby-chatbot](https://github.com/yvann-hub/Robby-chatbot)",
+            "#### 净名小维摩是带有会话记忆的聊天机器人，被设计来用于回答与佛法相关的问题 📄",
+            "#### 它使用大语言模型来产生基于自然语言的互动. 🌐",
+            "#### 目前支持 纯文本文件、CSV 和 PDF 文件，其它格式的支持很快就会上线...",
+            "#### 采用的技术： [Langchain](https://github.com/hwchase17/langchain), [OpenAI](https://platform.openai.com/docs/models/gpt-3-5) 和 [Streamlit](https://github.com/streamlit/streamlit) ⚡",
+            "#### 源代码: [yvann-hub/Robby-chatbot](https://github.com/yvann-hub/Robby-chatbot)",
         ]
         for section in sections:
             about.write(section)
@@ -41,7 +42,7 @@ class Sidebar:
         st.session_state["temperature"] = temperature
         
     def show_options(self):
-        with st.sidebar.expander("🛠️ Robby's Tools", expanded=False):
+        with st.sidebar.expander("🛠️ 小维摩的工具", expanded=False):
 
             self.reset_chat_button()
             self.model_selector()

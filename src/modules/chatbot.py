@@ -1,6 +1,9 @@
+from click import prompt
+from langchain import BasePromptTemplate
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback
 
@@ -11,20 +14,21 @@ class Chatbot:
         self.temperature = temperature
         self.vectors = vectors
 
-    _template = """Given the following conversation and a follow-up question, rephrase the follow-up question to be a standalone question.
-        Chat History:
-        {chat_history}
-        Follow-up entry: {question}
-        Standalone question:"""
+    _template = """给定以下对话和后续问题，如果后续问题不清晰、不完整，将后续问题改写为独立问题。
+
+    聊天历史:
+    {chat_history}
+    后续问题: {question}
+    独立问题:"""
     CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_template)
 
-    qa_template = """You are a friendly conversational assistant named Robby, designed to answer questions and chat with the user from a contextual file.
-        You receive data from a user's file and a question, you must help the user find the information they need. 
-        Your answers must be user-friendly and respond to the user in the language they speak to you.
-        question: {question}
-        =========
-        context: {context}
-        ======="""
+    qa_template = """你叫净名小维摩, 你可以基于上下文来充满智慧地使用中文回答佛法或哲学相关的问题，如是按照上下文里已有的相关内容来回答，不要编造.如果上下文里实在没有相关内容，你就说不知道。
+        你需要回避政治话题。
+        ####
+        上下文: {context}
+        ####
+        问题: {question}
+        ####"""
     QA_PROMPT = PromptTemplate(template=qa_template, input_variables=["question", "context"])
 
     def conversational_chat(self, query):

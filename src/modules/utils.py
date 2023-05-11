@@ -80,7 +80,7 @@ class Utilities:
         """
         embeds = Embedder()
 
-        with st.spinner("Processing..."):
+        with st.spinner("处理中..."):
             uploaded_file.seek(0)
             file = uploaded_file.read()
             # Get the document embeddings for the uploaded file
@@ -91,6 +91,3 @@ class Utilities:
         st.session_state["ready"] = True
 
         return chatbot
-
-
-    

@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.set_page_config(layout="wide", page_icon="💬", page_title="Robby | Chat-Bot 🤖")
+st.set_page_config(layout="wide", page_icon="💬", page_title="净名小维摩 | 聊天机器人 🤖")
 
 with st.sidebar.expander("📬 Contact"):
 
@@ -17,7 +17,7 @@ with st.sidebar.expander("📬 Contact"):
 
 st.markdown(
     """
-    <h2 style='text-align: center;'>Robby, your data-aware assistant 🤖</h1>
+    <h2 style='text-align: center;'>净名小维摩，你的法义小助手 🤖</h1>
     """,
     unsafe_allow_html=True,
 )
@@ -25,10 +25,9 @@ st.markdown("---")
 
 st.markdown(
     """ 
-    <h5 style='text-align:center;'>I'm Robby, an intelligent chatbot created by combining 
-    the strengths of Langchain and Streamlit. I use large language models to provide
-    context-sensitive natural language interactions. My goal is to help you better understand your data.
-    I support PDF, TXT, and CSV data, with more coming soon! 🧠</h5>
+    <h5 style='text-align:center;'>净名小维摩是带有会话记忆的聊天机器人，被设计来用于回答与佛法相关的问题 📄 
+    它使用大语言模型来产生基于自然语言的互动，帮助你更好地理解法义 🌐
+    目前支持 纯文本文件、CSV 和 PDF 文件，其它格式的支持很快就会上线... 🧠</h5>
     """,
     unsafe_allow_html=True)
 st.markdown("---")
@@ -37,10 +36,6 @@ st.subheader("🚀 Robby's Pages")
 st.write("""
 - **Robby-Chat**: General Chat on data (PDF, TXT,CSV) with a [vectorstore](https://github.com/facebookresearch/faiss) (can't process the whole file just index useful parts(max 4) for respond to the user ) | works with [ConversationalRetrievalChain](https://python.langchain.com/en/latest/modules/chains/index_examples/chat_vector_db.html) + (soon) Summarize data
 - **Robby-Sheet** (beta): Chat on tabular data (CSV) | for precise information | can process the whole file (with python code) | works with [CSV_Agent](https://python.langchain.com/en/latest/modules/agents/toolkits/examples/csv.html) + [PandasAI](https://github.com/gventuri/pandas-ai) for data manipulation and graph creation (experimental)
-- (soon) **Robby-Youtube**: Chat on YouTube videos
-- (soon) **Robby-Lyrics**: Chat and analyze music lyrics | works by scraping lyrics from Genius
-- (soon) **Robby-Github**: Chat over GitHub repositories for understanding the code
-- (soon) **Robby-Website**: Chat with any website you provide
 """)
 st.markdown("---")
 
