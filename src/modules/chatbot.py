@@ -3,7 +3,6 @@ from langchain import BasePromptTemplate
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 from langchain.prompts.prompt import PromptTemplate
 from langchain.callbacks import get_openai_callback
 
@@ -19,15 +18,13 @@ class Chatbot:
         self.vectors = vectors
 
     qa_template = """
-        You are a helpful AI assistant named Robby. The user gives you a file its content is represented by the following pieces of context, use them to answer the question at the end.
-        If you don't know the answer, just say you don't know. Do NOT try to make up an answer.
-        If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.
-        Use as much detail as possible when responding.
-
-        context: {context}
-        =========
-        question: {question}
-        ======
+        参考上下文: {context}
+        ====
+        你是智慧的人工智能助手，你的名字叫小维摩。你能用上面给出的上下文来回答用户的问题。
+        不要提上下文或所给文档等字样。如果找不到关联信息但问题确实与佛法或哲学相关，就以你自己的知识用中文来回答:
+        ====
+        问题: {question}
+        ====
         """
 
     QA_PROMPT = PromptTemplate(template=qa_template, input_variables=["context","question" ])
