@@ -8,7 +8,8 @@ class Layout:
         """
         st.markdown(
             f"""
-            <h1 style='text-align: center;'> 询问关于 {types_files} 文件的问题 ! 😁</h1>
+            <h4 style='text-align: center;'> 从左侧选择一个文件或上传 {types_files} 类型文件然后提问吧 ! 😁 
+            如果右上角显示“RUNNING”字样请耐心等待 😁 </h4>
             """,
             unsafe_allow_html=True,
         )
@@ -30,15 +31,17 @@ class Layout:
         """
         Displays the prompt form
         """
-        with st.form(key="my_form", clear_on_submit=True):
-            user_input = st.text_area(
-                "提问:",
-                placeholder="请向我询问与文档相关的问题...",
-                key="input",
-                label_visibility="collapsed",
-            )
-            submit_button = st.form_submit_button(label="Send")
-            
-            is_ready = submit_button and user_input
+        #with st.form(key="my_form", clear_on_submit=True):
+        st.write("---")
+        user_input = st.text_input(
+            "提问:",
+            placeholder="请向我询问与文档相关的问题...",
+            key="input",
+            label_visibility="collapsed",
+            autocomplete="on",
+        )
+        #    submit_button = st.form_submit_button(label="提交")
+        #    is_ready = submit_button and user_input
+        is_ready = len(user_input) > 0
         return is_ready, user_input
     
