@@ -1,9 +1,3 @@
-#from tempfile import template
-#from venv import logger
-#from click import prompt
-#from langchain import BasePromptTemplate
-#import json
-from modules.sidebar import Sidebar
 import openai
 import streamlit as st
 import random
@@ -73,7 +67,7 @@ class Chatbot:
     def init_words():
         st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
         st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','不想回答这个问题。','我累了，突然不想跟你说话了。','我们换一个话题吧']
-        st.session_state.wrong_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
+        st.session_state.bad_topic_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
         st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
         st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
         st.session_state.make_it_clear_words = ['您可以说得明确一些吗？','您可以说的清楚一些吗？','您可以说的详细一些吗？']
@@ -85,14 +79,14 @@ class Chatbot:
             #随机返回一个思考中的话
             words=random.choice(st.session_state.thinking_words)
         elif topic == "refuse":
-            #随机返回一个拒绝回答的话
+            #随机返回一个拒绝认错的话
             words=random.choice(st.session_state.refuse_words)
         elif topic == "greeting":
             #随机返回一个打招呼的话
             words=random.choice(st.session_state.greeting_words)
         elif topic == "wrong":
             #随机返回一个提醒更换主题的话
-            words=random.choice(st.session_state.wrong_words)
+            words=random.choice(st.session_state.bad_topic_words)
         elif topic == "make_it_clear":
             #随机返回一个提醒说清楚的话
             words=random.choice(st.session_state.make_it_clear_words)
@@ -102,7 +96,6 @@ class Chatbot:
         return words
 
     def check_chat(self,query):
-        #应该先关掉提问form的提交按钮, 查询完再启用，略
         with st.spinner(text=self.say('thinking')):
             check_result = self.analyze_query(query)
         print(check_result)
@@ -136,6 +129,7 @@ class Chatbot:
                         with st.spinner(text=self.say('thinking')):
                             return self.conversational_chat(query,keys)
                 else:
+                    #如果有多个关键词，就调用对话模型
                     with st.spinner(text=self.say('thinking_hard')):
                         return self.conversational_chat(query,keys)
             else:
@@ -143,6 +137,7 @@ class Chatbot:
                 #return self.conversational_chat(query,'None')
                 return(self.say('make_it_clear'))
         else:
+            #不属于问“XX是什么”这类的简单问题，就调用对话模型
             with st.spinner(text=self.say('thinking_hard')):
                 return self.conversational_chat(query, keys)
 
@@ -199,13 +194,12 @@ class Chatbot:
             model="gpt-3.5-turbo", 
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
-            max_tokens=800,
+            max_tokens=450,
             n=1,
             stop=None,
             )
         # Parse the OpenAI API response and extract the analysis result 
         result_str = response.choices[0].message.content
-        #print(result_str)
         split_result = result_str.split(':')
         # Extract the values for each key
         simple_question = True if 'Yes' in split_result[1] else False
@@ -221,8 +215,6 @@ class Chatbot:
             'greetings': greetings,
             'keywords': keywords
         }
-        # Convert the dictionary to JSON format
-        #result_json = json.dumps(data, ensure_ascii=False)
         return(data)
     
     

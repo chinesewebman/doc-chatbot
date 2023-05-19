@@ -35,4 +35,4 @@ def merge_json(file1, file2, output_file):
 # merge_json('file1.json', 'file2.json', 'output.json')
 
 #parse_file('000净名百科词汇.txt', 'user-dict2.json')
-merge_json('user-dict1.json', 'user-dict2.json', 'user-dict.json')
+#merge_json('user-dict1.json', 'user-dict2.json', 'user-dict.json')
