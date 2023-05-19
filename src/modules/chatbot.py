@@ -22,7 +22,7 @@ class Chatbot:
         ====
         You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
         Don't mention the the word 'context' or 'reference'. If you can't find relevant information but the question is really related to 
-        Buddhism or philosophy, use your own knowledge to answer the question about the keywords: {keywords} in Chinese or user-specified language::
+        Buddhism or philosophy, use your own knowledge to answer the question about the keywords: {keywords} in Chinese or user-specified language:
         ====
         question: {question}
         ====
@@ -33,7 +33,7 @@ class Chatbot:
         ====
         You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
         If you can't find relevant information but the question is really related 
-        to Buddhism or philosophy, answer the question with your own knowledge in Chinese or user-specified language::
+        to Buddhism or philosophy, answer the question with your own knowledge in Chinese or user-specified language:
         ====
         question: {question}
         ====
@@ -74,7 +74,7 @@ class Chatbot:
     @staticmethod
     def init_words():
         st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
-        st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','不想回答这个问题。','我累了，突然不想跟你说话了。','我们换一个话题吧']
+        st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','网络好像有干扰，不知道您在说什么。','我累了，突然不想跟你说话了。','我们换一个话题吧']
         st.session_state.bad_topic_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
         st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
         st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
