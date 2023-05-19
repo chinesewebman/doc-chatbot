@@ -1,12 +1,8 @@
-# Robby-chatbot 🤖
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/yvann_hub?style=social)](https://twitter.com/yvann_hub)
-[![Last Commit](https://img.shields.io/github/last-commit/yvann-hub/Robby-chatbot)](https://github.com/yvann-hub/Robby-chatbot/commits/main)
-
+# chatbot 🤖
 
 ### An AI chatbot featuring conversational memory, designed to enable users to discuss their CSV, PDF and TXT data in a more intuitive manner. 📄
 ![Robby](robby-pic.png)
-Robby the Robot from [Forbidden Planet](https://youtu.be/bflfQN_YsTM)
+based from Robby the Robot from [Forbidden Planet](https://youtu.be/bflfQN_YsTM)
 
 By integrating the strengths of Langchain and OpenAI, Robby employs large language models to provide users with seamless, 
 context-aware natural language interactions for a better understanding of their data.🧠
@@ -15,10 +11,18 @@ context-aware natural language interactions for a better understanding of their 
 
 [![Robby-Chatbot](https://img.shields.io/static/v1?label=Robby-Chatbot&message=Visit%20Website&color=ffffff&labelColor=ADD8E6&style=for-the-badge)](https://robby-chatbot.com)
 
+#### Based on Robby chatbot, more features added:
+- multiple files supports, you can choose which file you want to ask about
+- word files (.docx) supports
+- local dictionary supports, if user query like "what is X", a local dict will be used in the first place to answer directly, this can avoid the hallucination of AI
+- a custom moderation supports, it will analyze the altitude and topic, helps to maintain the converstaion in the way you specified
+- some details tune: token exceeds limitation bug fix, random spin text displaying during waiting the response from chatgpt, custom chunk_size and chunk seprator, cunstom prompt with or without keywords, chunk score display and so on...
+
+#### removed feature:
+- CSV agent, because I don't need it, you can find it in the original project: https://github.com/yvann-hub/Robby-chatbot
+
 ## TO-DO :
 - [x] enable print tokens utilizations for the conversation
-- [x] Use CSV Agent for chat with the entire csv file
-- [ ] Add lots of files accepted like GitHub repo, Excel etc...
 - [ ] Add free models like vicuna and free embeddings
 - [ ] Replace chain of the chatbot by a custom agent for handling more features | memory + vectorstore + custom prompt
 
@@ -32,12 +36,12 @@ Follow these steps to set up and run the service locally :
 ### Installation
 Clone the repository :
 
-`git clone https://github.com/yvann-hub/Robby-chatbot.git`
+`git clone https://github.com/chinesewebman/doc-chatbot.git`
 
 
 Navigate to the project directory :
 
-`cd Robby-chatbot`
+`cd doc-chatbot`
 
 
 Create a virtual environment :
@@ -58,6 +62,6 @@ Launch the chat service locally :
 #### That's it! The service is now up and running locally. 🤗
 
 ## Contributing 🙌
-Contributions are always welcome! If you want to contribute to this project, please open an issue, submit a pull request or contact me at barbot.yvann@gmail.com (:
+Contributions are always welcome! If you want to contribute to this project, please open an issue, submit a pull request or contact the creator of Robby at barbot.yvann@gmail.com (: or me: chinesewebman@163.com
 
 
