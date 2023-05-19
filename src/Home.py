@@ -72,8 +72,8 @@ else:
             # Create containers for chat responses and user prompts
             response_container, prompt_container = st.container(), st.container()
             with prompt_container:
-                # Display the prompt form
-                is_ready, user_input = layout.prompt_form()
+                # Display the prompt input box
+                is_ready, user_input = layout.prompt_input()
                 # Initialize the chat history
                 history.initialize(st.session_state["selected_file"])
                 # Reset the chat history if button clicked

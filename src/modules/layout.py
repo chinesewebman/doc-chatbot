@@ -27,11 +27,10 @@ class Layout:
             unsafe_allow_html=True,
         )
 
-    def prompt_form(self):
+    def prompt_input(self):
         """
-        Displays the prompt form
+        Displays the prompt input box
         """
-        #with st.form(key="my_form", clear_on_submit=True):
         st.write("---")
         user_input = st.text_input(
             "提问:",
@@ -40,8 +39,6 @@ class Layout:
             label_visibility="collapsed",
             autocomplete="on",
         )
-        #    submit_button = st.form_submit_button(label="提交")
-        #    is_ready = submit_button and user_input
         is_ready = len(user_input) > 0
         return is_ready, user_input
     

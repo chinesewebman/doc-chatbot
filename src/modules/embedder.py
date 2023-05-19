@@ -95,5 +95,5 @@ class Embedder:
         # Load the vectors from the pickle file
         with open(f"{original_filename}.pkl", "rb") as f:
             vectors = pickle.load(f)
-        
+            print (f"{original_filename}.pkl"+" 已加载")
         return vectors

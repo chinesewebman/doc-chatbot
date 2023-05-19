@@ -106,10 +106,9 @@ class Utilities:
         embeds = Embedder()
 
         with st.spinner("处理中..."):
-            #print("from setup_chatbot(), file name is: "+ loaded_file.name)
-            # Get the document embeddings for the uploaded file
+            
+            # Get the document embeddings for the selected file
             vectors = embeds.getDocEmbeds(file, loaded_file.name)
-
             # Create a Chatbot instance with the specified model and temperature
             chatbot = Chatbot(model, temperature,vectors)
         st.session_state["ready"] = True
@@ -118,7 +117,7 @@ class Utilities:
     
     @staticmethod
     def load_dict(dict_file):
-        # 读取JSON格式词典文件，并初始化用户不良回应次数以及一些常用语句
+        # 读取JSON格式词典文件，并初始化用户不良回应次数
         if not hasattr(st.session_state, "bad_attitude_times"):
             st.session_state.bad_attitude_times = 0
 

@@ -3,6 +3,7 @@
 #from click import prompt
 #from langchain import BasePromptTemplate
 #import json
+from modules.sidebar import Sidebar
 import openai
 import streamlit as st
 import random
@@ -68,15 +69,18 @@ class Chatbot:
     CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(cq_template)
 
     # 设置常用类型的返回话语
-    st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
-    st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','不想回答这个问题。','我累了，突然不想跟你说话了。','我们换一个话题吧']
-    st.session_state.wrong_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
-    st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
-    st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
-    st.session_state.make_it_clear_words = ['您可以说得明确一些吗？','您可以说的清楚一些吗？','您可以说的详细一些吗？']
-
     @staticmethod
-    def say(topic):
+    def init_words():
+        st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
+        st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','不想回答这个问题。','我累了，突然不想跟你说话了。','我们换一个话题吧']
+        st.session_state.wrong_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
+        st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
+        st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
+        st.session_state.make_it_clear_words = ['您可以说得明确一些吗？','您可以说的清楚一些吗？','您可以说的详细一些吗？']
+
+    def say(self,topic):
+        if 'thinking_words' not in st.session_state:
+            self.init_words()
         if topic == "thinking":
             #随机返回一个思考中的话
             words=random.choice(st.session_state.thinking_words)
@@ -121,14 +125,18 @@ class Chatbot:
             return(self.say('greeting'))
         elif check_result['simple_question']:
             #属于问“XX是什么”这类的简单问题
-            if search_key != 'None' or search_key != '':
-                #如果有关键词，就先在字典里查找
-                if search_key in st.session_state['dict']:
-                    return (st.session_state.dict[search_key])
+            if (search_key != 'None' or search_key != ''):
+                if keys.find(',') == 0:
+                #如果只有一个关键词，就在字典里查找
+                    if search_key in st.session_state['dict']:
+                        return (st.session_state.dict[search_key])
+                    else:
+                        print('字典里未匹配的关键字: '+ search_key)
+                        #return('抱歉，暂时还没有这个知识储备。')
+                        with st.spinner(text=self.say('thinking')):
+                            return self.conversational_chat(query,keys)
                 else:
-                    print('字典里未匹配的关键字: '+keys)
-                    #return('抱歉，暂时还没有这个知识储备。')
-                    with st.spinner(text=self.say('thinking')):
+                    with st.spinner(text=self.say('thinking_hard')):
                         return self.conversational_chat(query,keys)
             else:
                 #如果希望没有关键字时也可以调用对话模型，就用下面这行替换return
@@ -145,6 +153,11 @@ class Chatbot:
         llm = ChatOpenAI(model_name=self.model_name, temperature=self.temperature, max_tokens=1100)
 
         retriever = self.vectors.as_retriever(search_kwargs={"k": st.session_state["top_k"]})
+        # get top_k documents and their scores
+        docs_and_scores = self.vectors.similarity_search_with_score(query, st.session_state["top_k"])
+        with st.sidebar.expander("匹配度达前 " + str(st.session_state["top_k"]) + " 位的文本块：", expanded=True):
+            st.markdown("\n\n")
+            st.write(docs_and_scores)
         #有关键字和没有关键字的两种情况，需要分别采用不同的模板。
         # max_tokens_limit 参数很重要，保证了无论文本块大小及匹配的文本块有多少个，都不会超过语言模型的单次token数限制（缺点：文本如果被截断，可能造成上下文不完整）
         if keys == 'None' or len(keys.strip()) == 0:
