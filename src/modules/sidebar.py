@@ -82,6 +82,7 @@ class Sidebar:
         def reset_history():
             history.reset(st.session_state["selected_file"])
             history.initialize_assistant_history(st.session_state["selected_file"])
+            st.success("聊天已重置！")
         filelist=[]
         for root, dirs, files in os.walk(data_directory):
               for file in files:

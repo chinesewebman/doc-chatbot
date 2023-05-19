@@ -48,7 +48,7 @@ class Chatbot:
     #Follow-up entry: {question}
     #Standalone question:"""
 
-    cq_template_with_keywords = """"===Given the following chat history and follow-up questions, if the follow-up question is a complete sentence,
+    cq_template_with_keywords = """"===Given the following chat history and follow-up question, if the follow-up question is a complete sentence,
          copy the follow-up question as a standalone question, and if the follow-up question is not a complete sentence or a complete question,
          complete it as a standalone question about the given keywords with reference to the chat history in Chinese or user-specified language.
         ===
@@ -58,7 +58,7 @@ class Chatbot:
         keywords：{keywords}
         standalone question:"""
     
-    cq_template = """"===Given the following chat history and follow-up questions, if the follow-up question is a complete sentence, 
+    cq_template = """"===Given the following chat history and follow-up question, if the follow-up question is a complete sentence, 
         copy the follow-up question as a standalone question as-is, and if the follow-up question is not a complete sentence 
         or a complete question, complete it as a standalone question with reference to the chat history in Chinese or user-specified language.
         ===
