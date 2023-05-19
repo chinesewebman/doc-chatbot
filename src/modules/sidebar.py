@@ -17,7 +17,8 @@ class Sidebar:
             "#### 它使用大语言模型来产生基于自然语言的互动. 🌐",
             "#### 目前支持 纯文本文件、Word文件、CSV 和 (可编辑的)PDF 文件，其它格式的支持很快就会上线...",
             "#### 采用的技术： [Langchain](https://github.com/hwchase17/langchain), [OpenAI](https://platform.openai.com/docs/models/gpt-3-5) 和 [Streamlit](https://github.com/streamlit/streamlit) ⚡",
-            "#### 源代码参考: [yvann-hub/Robby-chatbot](https://github.com/yvann-hub/Robby-chatbot)",
+            "#### 源代码: [chinesewebman/doc-chatbot](https://github.com/chinesewebman/doc-chatbot)",
+            "#### 参考: [yvann-hub/Robby-chatbot](https://github.com/yvann-hub/Robby-chatbot)"
         ]
         for section in sections:
             about.write(section)
