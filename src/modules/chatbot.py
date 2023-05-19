@@ -1,3 +1,5 @@
+import re
+from numpy import insert
 import openai
 import streamlit as st
 import random
@@ -75,7 +77,7 @@ class Chatbot:
     def init_words():
         st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
         st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','网络好像有干扰，不知道您在说什么。','我累了，突然不想跟你说话了。','我们换一个话题吧']
-        st.session_state.bad_topic_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
+        st.session_state.wrong_topic_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
         st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
         st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
         st.session_state.make_it_clear_words = ['您可以说得明确一些吗？','您可以说的清楚一些吗？','您可以说的详细一些吗？']
@@ -92,9 +94,9 @@ class Chatbot:
         elif topic == "greeting":
             #随机返回一个打招呼的话
             words=random.choice(st.session_state.greeting_words)
-        elif topic == "wrong":
+        elif topic == "wrong_topic":
             #随机返回一个提醒更换主题的话
-            words=random.choice(st.session_state.bad_topic_words)
+            words=random.choice(st.session_state.wrong_topic_words)
         elif topic == "make_it_clear":
             #随机返回一个提醒说清楚的话
             words=random.choice(st.session_state.make_it_clear_words)
@@ -102,6 +104,11 @@ class Chatbot:
             #随机返回一个说难度大的话
             words=random.choice(st.session_state.thinking_hard_words)
         return words
+    
+    def insert_dialog(self,query,words):
+        reply=self.say(words)
+        st.session_state["history"].append((query, reply))
+        return reply
 
     def check_chat(self,query):
         with st.spinner(text=self.say('thinking')):
@@ -112,25 +119,28 @@ class Chatbot:
         
         #对用户提问做分析之后的处理
         if check_result['political']:
-            return(self.say('wrong'))
+            return(self.insert_dialog(query,'wrong_topic'))
         elif check_result['negative_attitude']:
             #负面响应次数超过3次，就做个不同的应答，再重置为0。以后可以改为终止会话
             st.session_state['bad_attitude_times'] = st.session_state['bad_attitude_times'] + 1
             if st.session_state['bad_attitude_times'] > 3:
                 st.session_state['bad_attitude_times'] = 0
+                st.session_state['reset_chat'] = True
                 return('请控制一下您的情绪，对不起，我还在学习中，我不想继续这样的对话，感谢您的理解和耐心。')
             else:
-                return(self.say('refuse'))
+                return(self.insert_dialog(query,'refuse'))
         elif check_result['greetings']:
             #打招呼的话就不调用对话模型了，直接返回
-            return(self.say('greeting'))
+            return(self.insert_dialog(query,'greeting'))
         elif check_result['simple_question']:
             #属于问“XX是什么”这类的简单问题
             if (search_key != 'None' or search_key != ''):
                 if keys.find(',') == -1:
                 #如果只有一个关键词，就在字典里查找
                     if search_key in st.session_state['dict']:
-                        return (st.session_state.dict[search_key])
+                        reply = st.session_state['dict'][search_key]
+                        st.session_state["history"].append((query, reply))
+                        return (reply)
                     else:
                         print('字典里未匹配的关键字: '+ search_key)
                         #return('抱歉，暂时还没有这个知识储备。')
@@ -143,7 +153,7 @@ class Chatbot:
             else:
                 #如果希望没有关键字时也可以调用对话模型，就用下面这行替换return
                 #return self.conversational_chat(query,'None')
-                return(self.say('make_it_clear'))
+                return(self.insert_dialog(query,'make_it_clear'))
         else:
             #不属于问“XX是什么”这类的简单问题，就调用对话模型
             with st.spinner(text=self.say('thinking_hard')):

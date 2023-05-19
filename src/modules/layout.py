@@ -37,7 +37,7 @@ class Layout:
             placeholder="请向我询问与文档相关的问题...",
             key="input",
             label_visibility="collapsed",
-            autocomplete="on",
+            autocomplete="off",
         )
         is_ready = len(user_input) > 0
         return is_ready, user_input
