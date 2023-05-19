@@ -127,11 +127,11 @@ class Chatbot:
                         print('字典里未匹配的关键字: '+ search_key)
                         #return('抱歉，暂时还没有这个知识储备。')
                         with st.spinner(text=self.say('thinking')):
-                            return self.conversational_chat(query,keys)
+                            return self.conversational_chat(query)
                 else:
                     #如果有多个关键词，就调用对话模型
                     with st.spinner(text=self.say('thinking_hard')):
-                        return self.conversational_chat(query,keys)
+                        return self.conversational_chat(query)
             else:
                 #如果希望没有关键字时也可以调用对话模型，就用下面这行替换return
                 #return self.conversational_chat(query,'None')
@@ -139,30 +139,30 @@ class Chatbot:
         else:
             #不属于问“XX是什么”这类的简单问题，就调用对话模型
             with st.spinner(text=self.say('thinking_hard')):
-                return self.conversational_chat(query, keys)
+                return self.conversational_chat(query)
 
-    def conversational_chat(self, query, keys):
+    def conversational_chat(self, query):
         """
         Start a conversational chat with a model via Langchain
         """
         llm = ChatOpenAI(model_name=self.model_name, temperature=self.temperature, max_tokens=1100)
 
         retriever = self.vectors.as_retriever(search_kwargs={"k": st.session_state["top_k"]})
-        # get top_k documents and their scores
+        # get top_k documents and their scores displayed in a dataframe
         docs_and_scores = self.vectors.similarity_search_with_score(query, st.session_state["top_k"])
         with st.sidebar.expander("匹配度达前 " + str(st.session_state["top_k"]) + " 位的文本块：", expanded=True):
             st.markdown("\n\n")
             st.write(docs_and_scores)
         #有关键字和没有关键字的两种情况，需要分别采用不同的模板。
         # max_tokens_limit 参数很重要，保证了无论文本块大小及匹配的文本块有多少个，都不会超过语言模型的单次token数限制（缺点：文本如果被截断，可能造成上下文不完整）
-        if keys == 'None' or len(keys.strip()) == 0:
-            chain = ConversationalRetrievalChain.from_llm(llm=llm,
-                retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT, verbose=True, return_source_documents=True, max_tokens_limit=4097, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT})
-            chain_input = {"question": query, "chat_history": st.session_state["history"]}
-        else:
-            chain = ConversationalRetrievalChain.from_llm(llm=llm,
-                retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT_WITH_KEYWORDS, verbose=True, return_source_documents=True, max_tokens_limit=4097, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT_WITH_KEYWORDS})         
-            chain_input = {"question": query, "chat_history": st.session_state["history"], "keywords": keys}
+        #if keys == 'None' or len(keys.strip()) == 0:
+        chain = ConversationalRetrievalChain.from_llm(llm=llm,
+            retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT, verbose=True, return_source_documents=True, max_tokens_limit=4097, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT})
+        chain_input = {"question": query, "chat_history": st.session_state["history"]}
+        #else:
+        #    chain = ConversationalRetrievalChain.from_llm(llm=llm,
+        #        retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT_WITH_KEYWORDS, verbose=True, return_source_documents=True, max_tokens_limit=4097, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT_WITH_KEYWORDS})         
+        #    chain_input = {"question": query, "chat_history": st.session_state["history"], "keywords": keys}
         
         result = chain(chain_input)
 
