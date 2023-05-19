@@ -1,3 +1,4 @@
+from math import e
 import streamlit as st
 import os
 
@@ -27,7 +28,8 @@ class Sidebar:
     def reset_chat_button():
         if st.button("重置聊天"):
             st.session_state["reset_chat"] = True
-        st.session_state.setdefault("reset_chat", False)
+        else:
+            st.session_state["reset_chat"] = False
 
     def delemiter_selector(self):
         text_delimiter = st.selectbox(
@@ -80,9 +82,9 @@ class Sidebar:
 
     def show_file_selecotr(self, data_directory, history):
         def reset_history():
+            st.success("文件已选择")
             history.reset(st.session_state["selected_file"])
             history.initialize_assistant_history(st.session_state["selected_file"])
-            st.success("聊天已重置！")
         filelist=[]
         for root, dirs, files in os.walk(data_directory):
               for file in files:
@@ -92,15 +94,15 @@ class Sidebar:
         
     def show_options(self):
         with st.sidebar.expander("🛠️ 小维摩的设置", expanded=True):
-
+            st.session_state.setdefault("model", self.MODEL_OPTIONS[0])
+            st.session_state.setdefault("temperature", self.TEMPERATURE_DEFAULT_VALUE)
+            st.session_state.setdefault("top_k", 3)
+            st.session_state.setdefault("text_delimiter", "###")
+            st.session_state.setdefault("chunk_size_limit", 1100)
+            st.session_state.setdefault("reset_chat", False)
             self.reset_chat_button()
             self.chunk_size_slider()
             self.delemiter_selector()
             self.top_k_slider()
             self.model_selector()
             self.temperature_slider()
-            st.session_state.setdefault("model", self.MODEL_OPTIONS[0])
-            st.session_state.setdefault("temperature", self.TEMPERATURE_DEFAULT_VALUE)
-            st.session_state.setdefault("top_k", 3)
-            st.session_state.setdefault("text_delimiter", "###")
-            st.session_state.setdefault("chunk_size_limit", 1100)

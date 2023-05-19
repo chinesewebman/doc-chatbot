@@ -22,14 +22,14 @@ class ChatHistory:
         st.session_state["assistant"] = [self.default_prompt(selected_file)]
 
     def initialize(self, selected_file):
-        if "assistant" not in st.session_state:
+        if 'assistant' not in st.session_state:
             self.initialize_assistant_history(selected_file)
-        if "user" not in st.session_state:
+        if 'user' not in st.session_state:
             self.initialize_user_history()
 
     def reset(self, selected_file):
+        st.balloons()
         st.session_state["history"] = []
-        
         self.initialize_user_history()
         self.initialize_assistant_history(selected_file)
         st.session_state["reset_chat"] = False
