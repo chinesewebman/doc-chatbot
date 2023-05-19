@@ -61,6 +61,10 @@ Launch the chat service locally :
 
 #### That's it! The service is now up and running locally. 🤗
 
+#### local dict construction
+the orignal dict file should be a .txt file, each phrase begin with a name following by a  :  and the explaination of it follows up, can cross multiple lines, ended in ###
+use new-dict.py to create or merge the dict file, expamples are in the comments. during the merge process, if there is conflicts between 2 dict files, the content comes from the first one will be chosen. at last, the file "user-dict.json" will be used during query, so rename your dict file to this name.
+
 ## Contributing 🙌
 Contributions are always welcome! If you want to contribute to this project, please open an issue, submit a pull request or contact the creator of Robby at barbot.yvann@gmail.com (: or me: chinesewebman@163.com
 
