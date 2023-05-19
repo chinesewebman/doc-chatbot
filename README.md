@@ -16,7 +16,7 @@ context-aware natural language interactions for a better understanding of their 
 - word files (.docx) supports
 - local dictionary supports, if user query like "what is X", a local dict will be used in the first place to answer directly, this can avoid the hallucination of AI
 - a custom moderation supports, it will analyze the altitude and topic, helps to maintain the converstaion in the way you specified
-- some details tune: token exceeds limitation bug fix, random spin text displaying during waiting the response from chatgpt, custom chunk_size and chunk seprator, cunstom prompt with or without keywords, chunk score display and so on...
+- some details tune: token exceeds limitation bug fix, random spin text displaying during waiting the response from chatgpt, custom chunk_size and chunk separator for text-splitter, custom top_k for retriever, custom prompt with or without keywords, chunk score display and so on...
 
 #### removed feature:
 - CSV agent, because I don't need it, you can find it in the original project: https://github.com/yvann-hub/Robby-chatbot
