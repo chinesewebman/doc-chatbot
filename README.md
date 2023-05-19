@@ -14,8 +14,8 @@ context-aware natural language interactions for a better understanding of their 
 #### Based on Robby chatbot, more features added:
 - multiple files supports, you can choose which file you want to ask about
 - word files (.docx) supports
-- local dictionary supports, if user query like "what is X", a local dict will be used in the first place to answer directly, this can avoid the hallucination of AI and saves tokens used by context docs( the main reason is: I don't want the chatbot to commit it's wrong when user blames :)
-- a custom moderation supports, it will analyze the altitude and topic, helps to maintain the converstaion in the way you specified
+- local dictionary supports, if user query like "what is X", a local dict will be used in the first place to answer directly, this can avoid the hallucination of AI and saves tokens used by context docs.
+- a custom moderation supports, it will analyze the altitude and topic, helps to maintain the converstaion in the way you specified( the main reason is: I don't want the chatbot to commit it's wrong when user blames :)
 - some details tune: token exceeds limitation bug fix, random spin text displaying during waiting the response from chatgpt, custom chunk_size and chunk separator for text-splitter, custom top_k for retriever, custom prompt with or without keywords, chunk score display and so on...
 
 #### removed feature:
