@@ -1,6 +1,6 @@
 # doc-chatbot 🤖
 
-### An AI chatbot featuring conversational memory, designed to enable users to discuss their CSV, PDF, DOCX and TXT data in a more intuitive manner. plus, you can put a dictionary as a fixed local knowledge base📄
+### An AI chatbot featuring conversational memory, designed to enable users to discuss their CSV, PDF, DOCX and TXT data in a more intuitive manner. plus, you can put a dictionary as a fixed local knowledge base, and ... this chatbot will refuse to admit mistakes!📄
 ![Robby](robby-pic.png)
 based on Robby the Robot from [Forbidden Planet](https://youtu.be/bflfQN_YsTM)
 
