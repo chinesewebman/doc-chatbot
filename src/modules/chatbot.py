@@ -18,22 +18,24 @@ class Chatbot:
         self.vectors = vectors
         
     qa_template_with_keywords = """
-        参考上下文: {context}
+        Reference context: {context}
         ====
-        你是智慧的人工智能助手，你的名字叫小维摩。你能用上面给出的上下文来回答用户的问题。
-        不要提上下文或所给文档等字样。如果找不到关联信息但问题确实与佛法或哲学相关，就以你自己的知识用中文来回答关于关键词:{keywords}的问题:
+        You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
+        Don't mention the the word 'context' or 'reference'. If you can't find relevant information but the question is really related to 
+        Buddhism or philosophy, use your own knowledge to answer the question about the keywords: {keywords} in Chinese or user-specified language::
         ====
-        问题: {question}
+        question: {question}
         ====
         """
     
     qa_template = """
-        参考上下文: {context}
+        Reference context: {context}
         ====
-        你是智慧的人工智能助手，你的名字叫小维摩。你能用上面给出的上下文来回答用户的问题。
-        不要提上下文或所给文档等字样。如果找不到关联信息但问题确实与佛法或哲学相关，就以你自己的知识用中文来回答问题:
+        You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
+        If you can't find relevant information but the question is really related 
+        to Buddhism or philosophy, answer the question with your own knowledge in Chinese or user-specified language::
         ====
-        问题: {question}
+        question: {question}
         ====
         """
 
@@ -46,18 +48,24 @@ class Chatbot:
     #Follow-up entry: {question}
     #Standalone question:"""
 
-    cq_template_with_keywords = """"给定以下聊天历史和后续问题，如果后续问题是完整的句子，就原样将后续问题复制为独立问题，如果后续问题不是一个完整句子或完整问题，就参考聊天历史将其补全为关于所给关键词的独立问题。
-        聊天历史:
+    cq_template_with_keywords = """"===Given the following chat history and follow-up questions, if the follow-up question is a complete sentence,
+         copy the follow-up question as a standalone question, and if the follow-up question is not a complete sentence or a complete question,
+         complete it as a standalone question about the given keywords with reference to the chat history in Chinese or user-specified language.
+        ===
+        chat history:
         {chat_history}
-        后续问题: {question}
-        关键词：{keywords}
-        独立问题:"""
+        follow-up question: {question}
+        keywords：{keywords}
+        standalone question:"""
     
-    cq_template = """"给定以下聊天历史和后续问题，如果后续问题是完整的句子，就原样将后续问题复制为独立问题，如果后续问题不是一个完整句子或完整问题，就参考聊天历史将其补全为独立问题。
-        聊天历史:
+    cq_template = """"===Given the following chat history and follow-up questions, if the follow-up question is a complete sentence, 
+        copy the follow-up question as a standalone question as-is, and if the follow-up question is not a complete sentence 
+        or a complete question, complete it as a standalone question with reference to the chat history in Chinese or user-specified language.
+        ===
+        chat history:
         {chat_history}
-        后续问题: {question}
-        独立问题:"""
+        follow-up question: {question}
+        standalone question:"""
 
     CONDENSE_QUESTION_PROMPT_WITH_KEYWORDS = PromptTemplate.from_template(cq_template_with_keywords)
     CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(cq_template)
@@ -119,7 +127,7 @@ class Chatbot:
         elif check_result['simple_question']:
             #属于问“XX是什么”这类的简单问题
             if (search_key != 'None' or search_key != ''):
-                if keys.find(',') == 0:
+                if keys.find(',') == -1:
                 #如果只有一个关键词，就在字典里查找
                     if search_key in st.session_state['dict']:
                         return (st.session_state.dict[search_key])
