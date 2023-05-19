@@ -1,4 +1,4 @@
-# chatbot 🤖
+# doc-chatbot 🤖
 
 ### An AI chatbot featuring conversational memory, designed to enable users to discuss their CSV, PDF and TXT data in a more intuitive manner. 📄
 ![Robby](robby-pic.png)
