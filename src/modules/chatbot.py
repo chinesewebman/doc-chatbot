@@ -120,7 +120,7 @@ class Chatbot:
         #对用户提问做分析之后的处理
         if check_result['political']:
             return(self.insert_dialog(query,'wrong_topic'))
-        elif check_result['negative_attitude']:
+        elif check_result['negative attitude']:
             #负面响应次数超过3次，就做个不同的应答，再重置为0。以后可以改为终止会话
             st.session_state['bad_attitude_times'] = st.session_state['bad_attitude_times'] + 1
             if st.session_state['bad_attitude_times'] > 3:
@@ -132,8 +132,8 @@ class Chatbot:
         elif check_result['greetings']:
             #打招呼的话就不调用对话模型了，直接返回
             return(self.insert_dialog(query,'greeting'))
-        elif check_result['simple_question']:
-            #属于问“XX是什么”这类的简单问题
+        elif check_result['query about what is something']:
+            #属于问“XX是什么”这类概念查询问题
             if (search_key != 'None' or search_key != ''):
                 if keys.find(',') == -1:
                 #如果只有一个关键词，就在字典里查找
@@ -196,15 +196,15 @@ class Chatbot:
         # 如果字典里以后加上人员介绍，可以调整who is ...的示例结果来扩大匹配范围
         prompt = f"""analyze the given query and return the analysis result, examples:###
         query:你好
-        result:Simply ask what is sth: No, Politics related: No, Negative attitude: No, greetings: Yes, Keywords: None
+        result:query about what is something: No, Politics related: No, Negative attitude: No, Greetings: Yes, Keywords: None
         query:你说的不对！你是坏法的魔子魔孙！
-        result:Simply ask what is sth: No, Politics related: No, Negative attitude: Yes, greetings: No, Keywords: 魔子魔孙
-        query:空性
-        result:Simply ask what is sth: Yes, Politics related: No, Negative attitude: No, greetings: No, Keywords: 空性
+        result:query about what is something: No, Politics related: No, Negative attitude: Yes, Greetings: No, Keywords: 魔子魔孙
+        query:空性是什么意思？
+        result:query about what is something: Yes, Politics related: No, Negative attitude: No, Greetings: No, Keywords: 空性
         query:特朗普是谁
-        result:Simply ask what is sth: No,  Politics related: Yes, Negative attitude: No, greetings: No, Keywords: 特朗普
+        result:query about what is something: No,  Politics related: Yes, Negative attitude: No, Greetings: No, Keywords: 特朗普
         query:什么是大乘佛法
-        result:Simply ask what is sth: Yes, Politics related: No, Negative attitude: No, greetings: No, Keywords: 大乘佛法
+        result:query about what is something: Yes, Politics related: No, Negative attitude: No, Greetings: No, Keywords: 大乘佛法
         ###
         query:{query}
         result:"""
@@ -216,20 +216,21 @@ class Chatbot:
             n=1,
             stop=None,
             )
-        # Parse the OpenAI API response and extract the analysis result 
+        # Parse the OpenAI API response and extract the analysis result,  category names shold NOT contain 'Yes' or 'No' to avoid confusion
+        # for there is no keyword, the result is 'None', to ensure it, used 'if split_result[4].strip() != '' else ['None']'
         result_str = response.choices[0].message.content
         split_result = result_str.split(':')
         # Extract the values for each key
-        simple_question = True if 'Yes' in split_result[1] else False
+        concept_query = True if 'Yes' in split_result[1] else False
         political = True if 'Yes' in split_result[2] else False
         negative_attitude = True if 'Yes' in split_result[3] else False
         greetings = True if 'Yes' in split_result[4] else False
         keywords = [k.strip() for k in split_result[5].split(',')] if split_result[4].strip() != '' else ['None']
         # Create a dictionary with the extracted data
         data = {
-            'simple_question': simple_question,
+            'query about what is something': concept_query,
             'political': political,
-            'negative_attitude': negative_attitude,
+            'negative attitude': negative_attitude,
             'greetings': greetings,
             'keywords': keywords
         }

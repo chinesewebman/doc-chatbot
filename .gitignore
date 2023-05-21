@@ -159,3 +159,4 @@ src/pages/3_Robby-Youtube.py
 *.zip
 *.docx
 embeddings/.gitkeep
+*.txt
