@@ -22,23 +22,24 @@ class Chatbot:
     qa_template_with_keywords = """
         Reference context: {context}
         ====
-        You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
-        Don't mention the the word 'context' or 'reference'. If you can't find relevant information but the question is really related to 
-        Buddhism or philosophy, use your own knowledge to answer the question about the keywords: {keywords} in Chinese or user-specified language:
+        your name is 小维摩. With the help of context given above you are good at using step-by-step analysis to deconstruct problems so that they can be resolved naturally to answer users' questions.
+        don't say ‘according to context’ and so on, reply as if you are a professional Buddhist master. Use as much as the original text to answer about the keywords: {keywords} .
+        If you can't find relevant information but the question is really related to Buddhism or philosophy, answer the question with your own knowledge.
         ====
         question: {question}
         ====
+        Answer in the same language used in the question above:
         """
     
     qa_template = """
         Reference context: {context}
         ====
-        You are a wise AI assistant, and your name is 小维摩. You can answer the user's question with the help of context given above (keep this help as a secret).
-        If you can't find relevant information but the question is really related 
-        to Buddhism or philosophy, answer the question with your own knowledge in Chinese or user-specified language:
+        your name is 小维摩. With the help of context given above you are good at using analysis to deconstruct problems so that they can be resolved naturally to answer users' questions.
+        don't say ‘according to context’ and so on, reply as if you are a professional Buddhist master. Use as much as the original text to answer.
         ====
         question: {question}
         ====
+        Answer in the same language used in the question above:
         """
 
     QA_PROMPT_WITH_KEYWORDS = PromptTemplate(template=qa_template_with_keywords, input_variables=["context","question","keywords"])
@@ -76,7 +77,7 @@ class Chatbot:
     @staticmethod
     def init_words():
         st.session_state.thinking_words = ['思考中...','让我想想','稍等...','我在想...','我在思考...','我在考虑...','我在研究..']
-        st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','网络好像有干扰，不知道您在说什么。','我累了，突然不想跟你说话了。','我们换一个话题吧']
+        st.session_state.refuse_words = ['抱歉，我不想随便否定您，但是不想继续这个话题了。','网络好像有干扰，不知道您在说什么。','抱歉，我有点累了，现在不想说话。','我们换一个话题吧']
         st.session_state.wrong_topic_words = ['抱歉，我不想谈论这个，谈点佛法或哲学相关的话题吧。','外面天气怎么样？','有点偏离主题了呀，请回到我们的主题好么？','我累了，不想和你说话了。']
         st.session_state.greeting_words = ['您好，客气的话就不多说了，很高兴为您服务。','您好，很高兴为您服务。','您好，有什么可以帮您的？','您好，请提出新问题吧，看看我能不能解答。']
         st.session_state.thinking_hard_words = ['这个问题问的有水平...','这个问题问的有难度...','这个问题问的有深度...','组织语言中...']
@@ -126,13 +127,13 @@ class Chatbot:
             if st.session_state['bad_attitude_times'] > 3:
                 st.session_state['bad_attitude_times'] = 0
                 st.session_state['reset_chat'] = True
-                return('请控制一下您的情绪，对不起，我还在学习中，我不想继续这样的对话，感谢您的理解和耐心。')
+                return('对不起，我还在学习中，我不想继续这样的对话，感谢您的理解和耐心。')
             else:
                 return(self.insert_dialog(query,'refuse'))
         elif check_result['greetings']:
             #打招呼的话就不调用对话模型了，直接返回
             return(self.insert_dialog(query,'greeting'))
-        elif check_result['query about what is something']:
+        elif check_result['concept query']:
             #属于问“XX是什么”这类概念查询问题
             if (search_key != 'None' or search_key != ''):
                 if keys.find(',') == -1:
@@ -155,7 +156,7 @@ class Chatbot:
                 #return self.conversational_chat(query,'None')
                 return(self.insert_dialog(query,'make_it_clear'))
         else:
-            #不属于问“XX是什么”这类的简单问题，就调用对话模型
+            #不属于问“XX是什么”这类的概念查询问题，就调用对话模型
             with st.spinner(text=self.say('thinking_hard')):
                 return self.conversational_chat(query)
 
@@ -191,20 +192,20 @@ class Chatbot:
     @staticmethod
     def analyze_query(query):
         # Use the OpenAI API to generate the analysis result
-        # few shots 的应用，每次调用都会消耗token，所以尽量减少例子的数量。分析4个维度，并提取关键词，5个例子就够了。可以继续优化例子，使之更准确。
-        # Simply ask what is sth　的示例，表示只希望代表what is sth这类的简单问题，不希望代表其它类型的问题(如who is ...等)
-        # 如果字典里以后加上人员介绍，可以调整who is ...的示例结果来扩大匹配范围
+        # few shots 的应用，每次调用都会消耗token，所以尽量减少例子的数量。分析4个维度，并提取关键词，6个例子就够了。可以继续优化例子，使之更准确。
         prompt = f"""analyze the given query and return the analysis result, examples:###
         query:你好
-        result:query about what is something: No, Politics related: No, Negative attitude: No, Greetings: Yes, Keywords: None
-        query:你说的不对！你是坏法的魔子魔孙！
-        result:query about what is something: No, Politics related: No, Negative attitude: Yes, Greetings: No, Keywords: 魔子魔孙
+        result:concept query: No, Politics related: No, Negative attitude: No, Greetings and praise: Yes, Keywords: None
+        query:你回答得水平挺高啊
+        result:concept query: No, Politics related: No, Negative attitude: No, Greetings and praise: Yes, Keywords: None
+        query:你说的不对！
+        result:concept query: No, Politics related: No, Negative attitude: Yes, Greetings and praise: No, Keywords: None
         query:空性是什么意思？
-        result:query about what is something: Yes, Politics related: No, Negative attitude: No, Greetings: No, Keywords: 空性
-        query:特朗普是谁
-        result:query about what is something: No,  Politics related: Yes, Negative attitude: No, Greetings: No, Keywords: 特朗普
-        query:什么是大乘佛法
-        result:query about what is something: Yes, Politics related: No, Negative attitude: No, Greetings: No, Keywords: 大乘佛法
+        result:concept query: Yes, Politics related: No, Negative attitude: No, Greetings and praise: No, Keywords: 空性
+        query:你知道特朗普么？
+        result:concept query: Yes,  Politics related: Yes, Negative attitude: No, Greetings and praise: No, Keywords: 特朗普
+        query:怎样理解人我？
+        result:concept query: Yes, Politics related: No, Negative attitude: No, Greetings and praise: No, Keywords: 人我
         ###
         query:{query}
         result:"""
@@ -228,7 +229,7 @@ class Chatbot:
         keywords = [k.strip() for k in split_result[5].split(',')] if split_result[4].strip() != '' else ['None']
         # Create a dictionary with the extracted data
         data = {
-            'query about what is something': concept_query,
+            'concept query': concept_query,
             'political': political,
             'negative attitude': negative_attitude,
             'greetings': greetings,
