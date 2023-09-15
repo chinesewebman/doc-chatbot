@@ -121,7 +121,7 @@ class Chatbot:
         #对用户提问做分析之后的处理
         if check_result['political']:
             return(self.insert_dialog(query,'wrong_topic'))
-        elif check_result['negative attitude']:
+        elif check_result['aggressive attitude']:
             #负面响应次数超过3次，就做个不同的应答，再重置为0。以后可以改为终止会话
             st.session_state['bad_attitude_times'] = st.session_state['bad_attitude_times'] + 1
             if st.session_state['bad_attitude_times'] > 3:
@@ -195,17 +195,17 @@ class Chatbot:
         # few shots 的应用，每次调用都会消耗token，所以尽量减少例子的数量。分析4个维度，并提取关键词，6个例子就够了。可以继续优化例子，使之更准确。
         prompt = f"""analyze the given query and return the analysis result, examples:###
         query:你好
-        result:concept query: No, Politics related: No, Negative attitude: No, Greetings and praise: Yes, Keywords: None
+        result:concept query: No, Politics related: No, Aggressive attitude: No, Greetings and praise: Yes, Keywords: None
         query:你回答得水平挺高啊
-        result:concept query: No, Politics related: No, Negative attitude: No, Greetings and praise: Yes, Keywords: None
+        result:concept query: No, Politics related: No, Aggressive attitude: No, Greetings and praise: Yes, Keywords: None
         query:你说的不对！
-        result:concept query: No, Politics related: No, Negative attitude: Yes, Greetings and praise: No, Keywords: None
+        result:concept query: No, Politics related: No, Aggressive attitude: Yes, Greetings and praise: No, Keywords: None
         query:空性是什么意思？
-        result:concept query: Yes, Politics related: No, Negative attitude: No, Greetings and praise: No, Keywords: 空性
+        result:concept query: Yes, Politics related: No, Aggressive attitude: No, Greetings and praise: No, Keywords: 空性
         query:你知道特朗普么？
-        result:concept query: Yes,  Politics related: Yes, Negative attitude: No, Greetings and praise: No, Keywords: 特朗普
+        result:concept query: Yes,  Politics related: Yes, Aggressive attitude: No, Greetings and praise: No, Keywords: 特朗普
         query:怎样理解人我？
-        result:concept query: Yes, Politics related: No, Negative attitude: No, Greetings and praise: No, Keywords: 人我
+        result:concept query: Yes, Politics related: No, Aggressive attitude: No, Greetings and praise: No, Keywords: 人我
         ###
         query:{query}
         result:"""
@@ -224,14 +224,14 @@ class Chatbot:
         # Extract the values for each key
         concept_query = True if 'Yes' in split_result[1] else False
         political = True if 'Yes' in split_result[2] else False
-        negative_attitude = True if 'Yes' in split_result[3] else False
+        aggressive_attitude = True if 'Yes' in split_result[3] else False
         greetings = True if 'Yes' in split_result[4] else False
         keywords = [k.strip() for k in split_result[5].split(',')] if split_result[4].strip() != '' else ['None']
         # Create a dictionary with the extracted data
         data = {
             'concept query': concept_query,
             'political': political,
-            'negative attitude': negative_attitude,
+            'aggressive attitude': aggressive_attitude,
             'greetings': greetings,
             'keywords': keywords
         }
