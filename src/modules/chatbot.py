@@ -200,8 +200,8 @@ class Chatbot:
         result:concept query: No, Politics related: No, Aggressive attitude: No, Greetings and praise: Yes, Keywords: None
         query:你说的不对！
         result:concept query: No, Politics related: No, Aggressive attitude: Yes, Greetings and praise: No, Keywords: None
-        query:空性是什么意思？
-        result:concept query: Yes, Politics related: No, Aggressive attitude: No, Greetings and praise: No, Keywords: 空性
+        query:与空性相对的是什么？
+        result:concept query: Yes, Politics related: No, Aggressive attitude: No, Greetings and praise: No, Keywords: 空性, 相对
         query:你知道特朗普么？
         result:concept query: Yes,  Politics related: Yes, Aggressive attitude: No, Greetings and praise: No, Keywords: 特朗普
         query:怎样理解人我？
