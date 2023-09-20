@@ -176,7 +176,7 @@ class Chatbot:
         # max_tokens_limit 参数很重要，保证了无论文本块大小及匹配的文本块有多少个，都不会超过语言模型的单次token数限制（缺点：文本如果被截断，可能造成上下文不完整）
         #if keys == 'None' or len(keys.strip()) == 0:
         chain = ConversationalRetrievalChain.from_llm(llm=llm,
-            retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT, verbose=True, return_source_documents=True, max_tokens_limit=4096, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT})
+            retriever=retriever, condense_question_prompt=self.CONDENSE_QUESTION_PROMPT, verbose=True, return_source_documents=True, max_tokens_limit=3900, combine_docs_chain_kwargs={'prompt': self.QA_PROMPT})
         chain_input = {"question": query, "chat_history": st.session_state["history"]}
         #else:
         #    chain = ConversationalRetrievalChain.from_llm(llm=llm,
